@@ -1,8 +1,10 @@
 var ListNode = /** @class */ (function () {
-    function ListNode(value, next) {
+    function ListNode(value, next, prev) {
         if (next === void 0) { next = null; }
+        if (prev === void 0) { prev = null; }
         this.value = value;
         this.next = next;
+        this.prev = prev;
     }
     return ListNode;
 }());
@@ -14,12 +16,14 @@ var LinkedList = /** @class */ (function () {
     }
     LinkedList.prototype.append = function (value) {
         var newNode = new ListNode(value);
+        newNode.prev = this.tail;
         this.tail.next = newNode;
         this.tail = newNode;
         this.length++;
     };
     LinkedList.prototype.prepend = function (value) {
         var newNode = new ListNode(value, this.head);
+        this.head.prev = newNode;
         this.head = newNode;
         this.length++;
     };
@@ -37,9 +41,18 @@ var LinkedList = /** @class */ (function () {
             return this.head;
         if (index === this.length - 1)
             return this.tail;
-        var currentNode = this.head;
-        for (var i = 0; i < index; i++) {
-            currentNode = currentNode.next;
+        var currentNode;
+        if (index < this.length / 2) {
+            currentNode = this.head;
+            for (var i = 0; i < index; i++) {
+                currentNode = currentNode.next;
+            }
+        }
+        else {
+            currentNode = this.tail;
+            for (var i = this.length - 1; i > index; i--) {
+                currentNode = currentNode.prev;
+            }
         }
         return currentNode;
     };
@@ -52,16 +65,25 @@ var LinkedList = /** @class */ (function () {
             return console.log("invalid index");
         var prevNode = this.goToIndex(index - 1);
         var nextNode = prevNode.next;
-        var newNode = new ListNode(value, nextNode);
+        var newNode = new ListNode(value, nextNode, prevNode);
         prevNode.next = newNode;
+        nextNode.prev = newNode;
         this.length++;
     };
     LinkedList.prototype.remove = function (index) {
+        if (this.length === 1)
+            return console.log("there is only one element");
         if (index === 0) {
-            if (this.length === 1)
-                return console.log("there is only one element");
             var newHead = this.head.next;
+            newHead.prev = null;
             this.head = newHead;
+            this.length--;
+            return;
+        }
+        if (index === this.length - 1) {
+            var newTail = this.tail.prev;
+            newTail.next = null;
+            this.tail = newTail;
             this.length--;
             return;
         }
@@ -70,18 +92,22 @@ var LinkedList = /** @class */ (function () {
         var prevNode = this.goToIndex(index - 1);
         var nextNode = prevNode.next.next;
         prevNode.next = nextNode;
-        if (nextNode === null)
-            this.tail = prevNode;
+        nextNode.prev = prevNode;
         this.length--;
     };
     return LinkedList;
 }());
-var myLinkedList = new LinkedList(10);
+var myLinkedList = new LinkedList(0);
+myLinkedList.append(10);
+myLinkedList.prepend(-10);
 myLinkedList.append(20);
-myLinkedList.prepend(50);
-myLinkedList.append(60);
-myLinkedList.insert(3, 30);
+myLinkedList.append(30);
+myLinkedList.insert(3, "index 3");
 myLinkedList.printList();
-myLinkedList.remove(4);
+myLinkedList.remove(6);
 myLinkedList.printList();
-console.log(myLinkedList.tail);
+// console.log(myLinkedList.goToIndex(0).value);
+// console.log(myLinkedList.goToIndex(1).value);
+// console.log(myLinkedList.goToIndex(2).value);
+// console.log(myLinkedList.goToIndex(3).value);
+// console.log(myLinkedList.goToIndex(4).value);

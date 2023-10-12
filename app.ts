@@ -1,5 +1,9 @@
 class ListNode {
-  constructor(public value: any, public next: ListNode | null = null) {}
+  constructor(
+    public value: any,
+    public next: ListNode | null = null,
+    public prev: ListNode | null = null
+  ) {}
 }
 class LinkedList {
   head: ListNode;
@@ -12,12 +16,14 @@ class LinkedList {
   }
   append(value: any) {
     let newNode = new ListNode(value);
+    newNode.prev = this.tail;
     this.tail.next = newNode;
     this.tail = newNode;
     this.length++;
   }
   prepend(value: any) {
     let newNode = new ListNode(value, this.head);
+    this.head.prev = newNode;
     this.head = newNode;
     this.length++;
   }
@@ -35,9 +41,20 @@ class LinkedList {
   goToIndex(index: number) {
     if (index === 0) return this.head;
     if (index === this.length - 1) return this.tail;
-    let currentNode = this.head;
-    for (let i = 0; i < index; i++) {
-      currentNode = currentNode.next!;
+
+    let currentNode: ListNode;
+    if (index < this.length / 2) {
+      currentNode = this.head;
+
+      for (let i = 0; i < index; i++) {
+        currentNode = currentNode.next!;
+      }
+    } else {
+      currentNode = this.tail;
+
+      for (let i = this.length - 1; i > index; i--) {
+        currentNode = currentNode.prev!;
+      }
     }
     return currentNode;
   }
@@ -49,17 +66,27 @@ class LinkedList {
 
     let prevNode = this.goToIndex(index - 1);
     let nextNode = prevNode.next;
-    let newNode = new ListNode(value, nextNode);
+    let newNode = new ListNode(value, nextNode, prevNode);
     prevNode.next = newNode;
+    nextNode!.prev = newNode;
 
     this.length++;
   }
 
   remove(index: number) {
+    if (this.length === 1) return console.log("there is only one element");
     if (index === 0) {
-      if (this.length === 1) return console.log("there is only one element");
       let newHead = this.head.next;
+      newHead!.prev = null;
       this.head = newHead!;
+      this.length--;
+      return;
+    }
+
+    if (index === this.length - 1) {
+      let newTail = this.tail.prev;
+      newTail!.next = null;
+      this.tail = newTail!;
       this.length--;
       return;
     }
@@ -70,19 +97,23 @@ class LinkedList {
     let nextNode = prevNode.next!.next;
 
     prevNode.next = nextNode;
-    if (nextNode === null) this.tail = prevNode;
+    nextNode!.prev = prevNode;
     this.length--;
   }
 }
 
-let myLinkedList = new LinkedList(10);
+let myLinkedList = new LinkedList(0);
+myLinkedList.append(10);
+myLinkedList.prepend(-10);
 myLinkedList.append(20);
-myLinkedList.prepend(50);
-myLinkedList.append(60);
+myLinkedList.append(30);
 
-myLinkedList.insert(3, 30);
+myLinkedList.insert(3, "index 3");
 myLinkedList.printList();
-myLinkedList.remove(4);
+myLinkedList.remove(6);
 myLinkedList.printList();
-
-console.log(myLinkedList.tail);
+// console.log(myLinkedList.goToIndex(0).value);
+// console.log(myLinkedList.goToIndex(1).value);
+// console.log(myLinkedList.goToIndex(2).value);
+// console.log(myLinkedList.goToIndex(3).value);
+// console.log(myLinkedList.goToIndex(4).value);
