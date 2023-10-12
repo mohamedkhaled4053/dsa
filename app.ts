@@ -82,6 +82,35 @@ class LinkedList {
     if (nextNode === null) this.tail = prevNode;
     this.length--;
   }
+
+  // the space complexity is o(n) for this and can work as it is for both singly and doubly linked list
+  // reverse() {
+  //   let reversedLinkedList = new LinkedList(this.head.value);
+  //   let currentNode = this.head.next;
+  //   while (currentNode !== null) {
+  //     reversedLinkedList.prepend(currentNode.value);
+  //     currentNode = currentNode.next;
+  //   }
+  //   this.head = reversedLinkedList.head;
+  //   this.tail = reversedLinkedList.tail;
+  // }
+
+  // same time complexity but better space complexity
+  reverse() {
+    if (this.length === 1) return this;
+
+    let first = this.head;
+    let second = first.next;
+    this.head.next = null;
+    while (second) {
+      let tmp = second.next;
+      second.next = first;
+      first = second;
+      second = tmp;
+    }
+    this.tail = this.head;
+    this.head = first;
+  }
 }
 
 class DoublyLinkedList {
@@ -179,20 +208,43 @@ class DoublyLinkedList {
     nextNode!.prev = prevNode;
     this.length--;
   }
+
+  reverse() {
+    if (this.length === 1) return this;
+
+    let first = this.head;
+    let second = first.next;
+    this.head.next = null;
+    this.tail.prev = null;
+    while (second) {
+      let tmp = second.next;
+      second.next = first;
+      first.prev = second;
+      first = second;
+      second = tmp;
+    }
+    this.tail = this.head;
+    this.head = first;
+  }
 }
 
 let myLinkedList = new DoublyLinkedList(0);
+
 myLinkedList.append(10);
 myLinkedList.prepend(-10);
 myLinkedList.append(20);
 myLinkedList.append(30);
 
 myLinkedList.insert(3, "index 3");
-myLinkedList.printList();
-myLinkedList.remove(6);
-myLinkedList.printList();
+// myLinkedList.printList();
+// myLinkedList.remove(6);
+// myLinkedList.printList();
 // console.log(myLinkedList.goToIndex(0).value);
 // console.log(myLinkedList.goToIndex(1).value);
 // console.log(myLinkedList.goToIndex(2).value);
 // console.log(myLinkedList.goToIndex(3).value);
 // console.log(myLinkedList.goToIndex(4).value);
+
+myLinkedList.printList();
+myLinkedList.reverse();
+myLinkedList.printList();
