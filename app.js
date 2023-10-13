@@ -1,39 +1,51 @@
-// the commented lines are how they do it with static arrays
-var Stack = /** @class */ (function () {
-    // top: number;
-    function Stack() {
-        this.stack = [];
-        // this.top = 0;
+var ListNode = /** @class */ (function () {
+    function ListNode(value, next) {
+        if (next === void 0) { next = null; }
+        this.value = value;
+        this.next = next;
     }
-    Stack.prototype.peek = function () {
-        return this.stack[this.stack.length - 1];
-        // return this.stack[this.stack[this.top - 1]];
-    };
-    Stack.prototype.push = function (value) {
-        this.stack.push(value);
-        // this.stack[this.top] = value;
-        // this.top++;
-    };
-    Stack.prototype.pop = function () {
-        return this.stack.pop();
-        // this.top--;
-        // let temp = this.stack[this.top];
-        // this.stack[this.top] = null;
-        // return temp;
-    };
-    return Stack;
+    return ListNode;
 }());
-var myStack = new Stack();
-myStack.push(0);
-myStack.push(1);
-myStack.push(2);
-myStack.push(3);
-myStack.push(4);
-console.log(myStack);
-console.log(myStack.peek());
-myStack.pop();
-myStack.pop();
-myStack.pop();
-myStack.pop();
-myStack.pop();
-console.log(myStack);
+var Queue = /** @class */ (function () {
+    function Queue() {
+        this.first = null;
+        this.last = null;
+        this.length = 0;
+    }
+    Queue.prototype.peek = function () {
+        return this.first;
+    };
+    Queue.prototype.enqueue = function (value) {
+        var newNode = new ListNode(value);
+        if (!this.last) {
+            this.first = newNode;
+            this.last = newNode;
+        }
+        else {
+            this.last.next = newNode;
+            this.last = newNode;
+        }
+        this.length++;
+    };
+    Queue.prototype.dequeue = function () {
+        if (!this.first)
+            return;
+        if (this.length === 1)
+            this.last = null;
+        this.first = this.first.next;
+        this.length--;
+    };
+    return Queue;
+}());
+var myQueue = new Queue();
+myQueue.enqueue(1);
+myQueue.enqueue(2);
+myQueue.enqueue(3);
+myQueue.dequeue();
+myQueue.dequeue();
+// myQueue.dequeue();
+console.log(myQueue);
+//Joy
+//Matt
+//Pavel
+//Samir

@@ -1,45 +1,51 @@
-// the commented lines are how they do it with static arrays
+class ListNode {
+  constructor(public value: any, public next: ListNode | null = null) {}
+}
 
-class Stack {
-  stack: any[];
-  // top: number;
+class Queue {
+  first: ListNode | null;
+  last: ListNode | null;
+  length: number;
   constructor() {
-    this.stack = [];
-    // this.top = 0;
+    this.first = null;
+    this.last = null;
+    this.length = 0;
   }
   peek() {
-    return this.stack[this.stack.length - 1];
-    // return this.stack[this.stack[this.top - 1]];
+    return this.first;
   }
-  push(value: any) {
-    this.stack.push(value);
-    // this.stack[this.top] = value;
-    // this.top++;
+  enqueue(value: any) {
+    let newNode = new ListNode(value);
+    if (!this.last) {
+      this.first = newNode;
+      this.last = newNode;
+    } else {
+      this.last.next = newNode;
+      this.last = newNode;
+    }
+    this.length++;
   }
-  pop() {
-    return this.stack.pop();
-    // this.top--;
-    // let temp = this.stack[this.top];
-    // this.stack[this.top] = null;
-    // return temp;
+  dequeue() {
+    if (!this.first) return;
+    if (this.length === 1) this.last = null;
+    this.first = this.first.next;
+    this.length--;
   }
 }
 
-const myStack = new Stack();
+const myQueue = new Queue();
 
-myStack.push(0);
-myStack.push(1);
-myStack.push(2);
-myStack.push(3);
-myStack.push(4);
+myQueue.enqueue(1);
+myQueue.enqueue(2);
+myQueue.enqueue(3);
 
-console.log(myStack);
-console.log(myStack.peek());
+myQueue.dequeue();
+myQueue.dequeue();
+// myQueue.dequeue();
 
-myStack.pop();
-myStack.pop();
-myStack.pop();
-myStack.pop();
-myStack.pop();
+console.log(myQueue);
 
-console.log(myStack);
+//Joy
+//Matt
+//Pavel
+//Samir
