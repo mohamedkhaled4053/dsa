@@ -1,35 +1,25 @@
-var ListNode = /** @class */ (function () {
-    function ListNode(value, next) {
-        if (next === void 0) { next = null; }
-        this.value = value;
-        this.next = next;
-    }
-    return ListNode;
-}());
+// the commented lines are how they do it with static arrays
 var Stack = /** @class */ (function () {
+    // top: number;
     function Stack() {
-        this.top = null;
-        this.length = 0;
+        this.stack = [];
+        // this.top = 0;
     }
     Stack.prototype.peek = function () {
-        return this.top;
+        return this.stack[this.stack.length - 1];
+        // return this.stack[this.stack[this.top - 1]];
     };
     Stack.prototype.push = function (value) {
-        var newNode = new ListNode(value, this.top);
-        this.top = newNode;
-        this.length++;
+        this.stack.push(value);
+        // this.stack[this.top] = value;
+        // this.top++;
     };
     Stack.prototype.pop = function () {
-        var _a;
-        if (this.isEmpty())
-            return "stack is empty";
-        var value = (_a = this.top) === null || _a === void 0 ? void 0 : _a.value;
-        this.top = this.top.next;
-        this.length--;
-        return value;
-    };
-    Stack.prototype.isEmpty = function () {
-        return this.length === 0;
+        return this.stack.pop();
+        // this.top--;
+        // let temp = this.stack[this.top];
+        // this.stack[this.top] = null;
+        // return temp;
     };
     return Stack;
 }());
@@ -40,6 +30,7 @@ myStack.push(2);
 myStack.push(3);
 myStack.push(4);
 console.log(myStack);
+console.log(myStack.peek());
 myStack.pop();
 myStack.pop();
 myStack.pop();
