@@ -1,119 +1,55 @@
-class TreeNode {
-  constructor(
-    public value: any,
-    public left: TreeNode | null = null,
-    public right: TreeNode | null = null ,
-    public frequency: number = 1 ,
-  ) {}
-}
-
-class BinarySearchTree {
-  root: TreeNode | null;
+class Graph {
+  numberOfNodes: number;
+  adjacentList: {};
   constructor() {
-    this.root = null;
+    this.numberOfNodes = 0;
+    this.adjacentList = {};
   }
-
-  findTargetNode(value: any) {
-    if (!this.root) return { currentNode: null, prevNode: null };
-    let currentNode: TreeNode = this.root;
-    let prevNode: TreeNode | null = null;
-    while (
-      (currentNode.left && value < currentNode.value) ||
-      (currentNode.right && value > currentNode.value)
-    ) {
-      prevNode = currentNode;
-      if (value < currentNode.value) {
-        currentNode = currentNode.left!;
-      } else {
-        currentNode = currentNode.right!;
+  addVertex(node) {
+    this.numberOfNodes++;
+    this.adjacentList[node] = [];
+  }
+  addEdge(node1, node2) {
+    this.adjacentList[node1].push(node2);
+    this.adjacentList[node2].push(node1);
+  }
+  showConnections() {
+    const allNodes = Object.keys(this.adjacentList);
+    for (let node of allNodes) {
+      let nodeConnections = this.adjacentList[node];
+      let connections = "";
+      let vertex;
+      for (vertex of nodeConnections) {
+        connections += vertex + " ";
       }
+      console.log(node + "-->" + connections);
     }
-    return { currentNode, prevNode };
-  }
-
-  insert(value: any) {
-    let newNode = new TreeNode(value);
-    let { currentNode } = this.findTargetNode(value);
-    if (!currentNode) return (this.root = newNode);
-
-    if (value < currentNode.value) currentNode.left = newNode;
-    if (value > currentNode.value) currentNode.right = newNode;
-    if (value === currentNode.value) currentNode.frequency ++;
-  }
-
-  lookup(value: any) {
-    let { currentNode } = this.findTargetNode(value);
-    if (!currentNode) return null;
-
-    return value === currentNode.value ? currentNode : null;
-  }
-  remove(value: any) {
-    let { currentNode, prevNode } = this.findTargetNode(value);
-    if (!currentNode) return false;
-
-    // if frequency
-    if(currentNode.frequency > 1) return currentNode.frequency --
-
-    // if leaf
-    if (!currentNode.left && !currentNode.right) {
-      if (currentNode === this.root || prevNode === null)
-        return (this.root = null);
-
-      if (value < prevNode.value) return (prevNode.left = null);
-      if (value > prevNode.value) return (prevNode.right = null);
-    }
-
-    // if has one child
-    if (!currentNode.right || !currentNode.left) {
-      if (currentNode === this.root || prevNode === null)
-        return (this.root = this.root!.left || this.root!.right);
-
-      if (value < prevNode.value)
-        return (prevNode.left = currentNode.left || currentNode.right);
-      if (value > prevNode.value)
-        return (prevNode.right = currentNode.left || currentNode.right);
-    }
-
-    // now it definitely has two childs
-    let successor = currentNode.right!;
-    while (successor.left) {
-      successor = successor.left;
-    }
-    this.remove(successor.value);
-    currentNode.value = successor.value;
   }
 }
 
-const tree = new BinarySearchTree();
-tree.insert(9);
-tree.insert(4);
-tree.insert(6);
-tree.insert(20);
-tree.insert(170);
-tree.insert(15);
-tree.insert(1);
-// tree.insert(1);
+const myGraph = new Graph();
+myGraph.addVertex("0");
+myGraph.addVertex("1");
+myGraph.addVertex("2");
+myGraph.addVertex("3");
+myGraph.addVertex("4");
+myGraph.addVertex("5");
+myGraph.addVertex("6");
+myGraph.addEdge("3", "1");
+myGraph.addEdge("3", "4");
+myGraph.addEdge("4", "2");
+myGraph.addEdge("4", "5");
+myGraph.addEdge("1", "2");
+myGraph.addEdge("1", "0");
+myGraph.addEdge("0", "2");
+myGraph.addEdge("6", "5");
 
-tree.remove(1);
-// tree.remove(6);
-// tree.remove(15);
-// tree.remove(170);
-// tree.remove(4);
-// tree.remove(20);
-// tree.remove(9);
-console.log(tree.root);
-
-//     9
-//  4     20
-//1  6  15  170
-
-// console.log(traverse(tree.root));
-
-// function traverse(node: any) {
-//   const tree = { value: node.value };
-//   //@ts-ignore
-//   tree.left = node.left === null ? null : traverse(node.left);
-//   //@ts-ignore
-//   tree.right = node.right === null ? null : traverse(node.right);
-//   return tree;
-// }
+myGraph.showConnections();
+//Answer:
+// 0-->1 2
+// 1-->3 2 0
+// 2-->4 1 0
+// 3-->1 4
+// 4-->3 2 5
+// 5-->4 6
+// 6-->5

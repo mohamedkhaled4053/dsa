@@ -1,115 +1,54 @@
-var TreeNode = /** @class */ (function () {
-    function TreeNode(value, left, right, frequency) {
-        if (left === void 0) { left = null; }
-        if (right === void 0) { right = null; }
-        if (frequency === void 0) { frequency = 1; }
-        this.value = value;
-        this.left = left;
-        this.right = right;
-        this.frequency = frequency;
+var Graph = /** @class */ (function () {
+    function Graph() {
+        this.numberOfNodes = 0;
+        this.adjacentList = {};
     }
-    return TreeNode;
-}());
-var BinarySearchTree = /** @class */ (function () {
-    function BinarySearchTree() {
-        this.root = null;
-    }
-    BinarySearchTree.prototype.findTargetNode = function (value) {
-        if (!this.root)
-            return { currentNode: null, prevNode: null };
-        var currentNode = this.root;
-        var prevNode = null;
-        while ((currentNode.left && value < currentNode.value) ||
-            (currentNode.right && value > currentNode.value)) {
-            prevNode = currentNode;
-            if (value < currentNode.value) {
-                currentNode = currentNode.left;
+    Graph.prototype.addVertex = function (node) {
+        this.numberOfNodes++;
+        this.adjacentList[node] = [];
+    };
+    Graph.prototype.addEdge = function (node1, node2) {
+        this.adjacentList[node1].push(node2);
+        this.adjacentList[node2].push(node1);
+    };
+    Graph.prototype.showConnections = function () {
+        var allNodes = Object.keys(this.adjacentList);
+        for (var _i = 0, allNodes_1 = allNodes; _i < allNodes_1.length; _i++) {
+            var node = allNodes_1[_i];
+            var nodeConnections = this.adjacentList[node];
+            var connections = "";
+            var vertex = void 0;
+            for (var _a = 0, nodeConnections_1 = nodeConnections; _a < nodeConnections_1.length; _a++) {
+                vertex = nodeConnections_1[_a];
+                connections += vertex + " ";
             }
-            else {
-                currentNode = currentNode.right;
-            }
+            console.log(node + "-->" + connections);
         }
-        return { currentNode: currentNode, prevNode: prevNode };
     };
-    BinarySearchTree.prototype.insert = function (value) {
-        var newNode = new TreeNode(value);
-        var currentNode = this.findTargetNode(value).currentNode;
-        if (!currentNode)
-            return (this.root = newNode);
-        if (value < currentNode.value)
-            currentNode.left = newNode;
-        if (value > currentNode.value)
-            currentNode.right = newNode;
-        if (value === currentNode.value)
-            currentNode.frequency++;
-    };
-    BinarySearchTree.prototype.lookup = function (value) {
-        var currentNode = this.findTargetNode(value).currentNode;
-        if (!currentNode)
-            return null;
-        return value === currentNode.value ? currentNode : null;
-    };
-    BinarySearchTree.prototype.remove = function (value) {
-        var _a = this.findTargetNode(value), currentNode = _a.currentNode, prevNode = _a.prevNode;
-        if (!currentNode)
-            return false;
-        // if frequency
-        if (currentNode.frequency > 1)
-            return currentNode.frequency--;
-        // if leaf
-        if (!currentNode.left && !currentNode.right) {
-            if (currentNode === this.root || prevNode === null)
-                return (this.root = null);
-            if (value < prevNode.value)
-                return (prevNode.left = null);
-            if (value > prevNode.value)
-                return (prevNode.right = null);
-        }
-        // if has one child
-        if (!currentNode.right || !currentNode.left) {
-            if (currentNode === this.root || prevNode === null)
-                return (this.root = this.root.left || this.root.right);
-            if (value < prevNode.value)
-                return (prevNode.left = currentNode.left || currentNode.right);
-            if (value > prevNode.value)
-                return (prevNode.right = currentNode.left || currentNode.right);
-        }
-        // now it definitely has two childs
-        var successor = currentNode.right;
-        while (successor.left) {
-            successor = successor.left;
-        }
-        this.remove(successor.value);
-        currentNode.value = successor.value;
-    };
-    return BinarySearchTree;
+    return Graph;
 }());
-var tree = new BinarySearchTree();
-tree.insert(9);
-tree.insert(4);
-tree.insert(6);
-tree.insert(20);
-tree.insert(170);
-tree.insert(15);
-tree.insert(1);
-// tree.insert(1);
-tree.remove(1);
-// tree.remove(6);
-// tree.remove(15);
-// tree.remove(170);
-// tree.remove(4);
-// tree.remove(20);
-// tree.remove(9);
-console.log(tree.root);
-//     9
-//  4     20
-//1  6  15  170
-// console.log(traverse(tree.root));
-// function traverse(node: any) {
-//   const tree = { value: node.value };
-//   //@ts-ignore
-//   tree.left = node.left === null ? null : traverse(node.left);
-//   //@ts-ignore
-//   tree.right = node.right === null ? null : traverse(node.right);
-//   return tree;
-// }
+var myGraph = new Graph();
+myGraph.addVertex("0");
+myGraph.addVertex("1");
+myGraph.addVertex("2");
+myGraph.addVertex("3");
+myGraph.addVertex("4");
+myGraph.addVertex("5");
+myGraph.addVertex("6");
+myGraph.addEdge("3", "1");
+myGraph.addEdge("3", "4");
+myGraph.addEdge("4", "2");
+myGraph.addEdge("4", "5");
+myGraph.addEdge("1", "2");
+myGraph.addEdge("1", "0");
+myGraph.addEdge("0", "2");
+myGraph.addEdge("6", "5");
+myGraph.showConnections();
+//Answer:
+// 0-->1 2
+// 1-->3 2 0
+// 2-->4 1 0
+// 3-->1 4
+// 4-->3 2 5
+// 5-->4 6
+// 6-->5
