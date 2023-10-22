@@ -1,16 +1,22 @@
 var numbers = [99, 44, 6, 2, 1, 5, 63, 87, 283, 4, 0];
-function insertionSort(array) {
-    var _a;
-    for (var i = 1; i < array.length; i++) {
-        for (var j = i - 1; j >= 0; j--) {
-            if (array[j] > array[j + 1]) {
-                _a = [array[j], array[j + 1]], array[j + 1] = _a[0], array[j] = _a[1];
-            }
-            else {
-                break;
-            }
+function mergeSort(array) {
+    if (array.length === 1)
+        return array;
+    var sorted = [];
+    var middle = Math.floor(array.length / 2);
+    var left = mergeSort(array.slice(0, middle));
+    var right = mergeSort(array.slice(middle, array.length));
+    for (var leftIndex = 0, rightIndex = 0; leftIndex < left.length || rightIndex < right.length;) {
+        if (left[leftIndex] < right[rightIndex] ||
+            (!right[rightIndex] && right[rightIndex] !== 0)) {
+            sorted.push(left[leftIndex]);
+            leftIndex++;
+        }
+        else {
+            sorted.push(right[rightIndex]);
+            rightIndex++;
         }
     }
+    return sorted;
 }
-insertionSort(numbers);
-console.log(numbers);
+console.log(mergeSort(numbers));
