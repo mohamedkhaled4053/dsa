@@ -1,14 +1,16 @@
 const numbers = [99, 44, 6, 2, 1, 5, 63, 87, 283, 4, 0];
 
-function selectionSort(array: number[]) {
-  let smallestIndex = 0;
-  for (let i = 0; i < array.length; i++) {
-    for (let j = i; j < array.length; j++) {
-      if (array[j] < array[smallestIndex]) smallestIndex = j;
+function insertionSort(array: number[]) {
+  for (let i = 1; i < array.length; i++) {
+    for (let j = i - 1; j >= 0; j--) {
+      if (array[j] > array[j + 1]) {
+        [array[j + 1], array[j]] = [array[j], array[j + 1]];
+      } else {
+        break;
+      }
     }
-    [array[i], array[smallestIndex]] = [array[smallestIndex], array[i]];
   }
 }
 
-selectionSort(numbers);
+insertionSort(numbers);
 console.log(numbers);
