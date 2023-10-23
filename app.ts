@@ -1,30 +1,32 @@
-const numbers = [99, 44, 6, 2, 1, 5, 63, 87, 283, 4, 0];
+const numbers = [10, 44, 6, 2, 1, 5, 63, 87, 283, 4, 0];
 
-function mergeSort(array: number[]) {
-  if (array.length === 1) return array;
-  let sorted: number[] = [];
-  let middle = Math.floor(array.length / 2);
+function quickSort(array: number[], start = 0, end = array.length - 1) {
+  if (start === end) return;
+  let pivotIndex = start;
+  let leftIndex = start;
+  let rightIndex = end;
 
-  let left = mergeSort(array.slice(0, middle));
-  let right = mergeSort(array.slice(middle, array.length));
-
-  for (
-    let leftIndex = 0, rightIndex = 0;
-    leftIndex < left.length || rightIndex < right.length;
-
-  ) {
-    if (
-      left[leftIndex] < right[rightIndex] ||
-      (!right[rightIndex] && right[rightIndex] !== 0)
-    ) {
-      sorted.push(left[leftIndex]);
-      leftIndex++;
-    } else {
-      sorted.push(right[rightIndex]);
-      rightIndex++;
-    }
+  while (rightIndex >= leftIndex) {
+    let pivot = array[pivotIndex];
+    let right = array[rightIndex];
+    let left = array[leftIndex];
+    if (right >= pivot) rightIndex--;
+    if (left <= pivot) leftIndex++;
+    if (left > pivot && right < pivot)
+      [array[leftIndex], array[rightIndex]] = [
+        array[rightIndex],
+        array[leftIndex],
+      ];
   }
-  return sorted;
+
+  [array[pivotIndex], array[rightIndex]] = [
+    array[rightIndex],
+    array[pivotIndex],
+  ];
+
+  quickSort(array, start, rightIndex);
+  quickSort(array, rightIndex + 1, end);
 }
 
-console.log(mergeSort(numbers));
+quickSort(numbers);
+console.log(numbers);
